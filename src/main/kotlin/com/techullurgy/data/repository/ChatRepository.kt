@@ -1,7 +1,7 @@
 package com.techullurgy.data.repository
 
 import com.techullurgy.data.model.database.ChatMessage
-import com.techullurgy.data.model.database.NetworkChatMessage
+import com.techullurgy.data.model.network.NetworkChatMessage
 import java.time.LocalDateTime
 
 interface ChatRepository {

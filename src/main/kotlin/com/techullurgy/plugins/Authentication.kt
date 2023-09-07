@@ -5,9 +5,12 @@ import com.techullurgy.data.repository.UserDetailsRepository
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 
-fun Application.configureAuthentication(userDetailsRepository: UserDetailsRepository) {
-    install(Authentication) {
-        basicAuthentication("basic_auth", userDetailsRepository)
+fun Application.configureAuthentication() {
+    val userDetailsRepository: UserDetailsRepository? = repositories?.userDetailsRepository
+    userDetailsRepository?.let {
+        install(Authentication) {
+            basicAuthentication("basic_auth", it)
+        }
     }
 }
 
@@ -23,6 +26,6 @@ private fun AuthenticationConfig.basicAuthentication(
             user?.let { UserPrincipal(it) }
         }
     }
-} // docker run -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=test -p 3306:3306 mysql
+}
 
 data class UserPrincipal(val user: User): Principal

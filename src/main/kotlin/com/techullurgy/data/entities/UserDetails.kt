@@ -24,7 +24,11 @@ interface UserDetail: Entity<UserDetail> {
     }
 }
 
-object UserDetails: Table<UserDetail>(UserDetailsTable) {
+
+open class UserDetails(alias: String?): Table<UserDetail>(UserDetailsTable, alias) {
+    companion object : UserDetails(null)
+    override fun aliased(alias: String): Table<UserDetail> = UserDetails(alias)
+
     val id = long(UserDetailsColumns.USER_ID).primaryKey().bindTo { it.id }
     val name = varchar(UserDetailsColumns.USER_NAME).bindTo { it.name }
     val email = varchar(UserDetailsColumns.EMAIL_ID).bindTo { it.email }

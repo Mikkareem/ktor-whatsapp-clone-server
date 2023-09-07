@@ -7,11 +7,8 @@ fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("UNUSED")
 fun Application.module() {
-    val repositories = configureDatabases()
-
-    val userDetailsRepository = repositories.userDetailsRepository
-
-    configureAuthentication(userDetailsRepository)
+    configureDatabases()
+    configureAuthentication()
     configureSockets()
     configureSerialization()
     configureSecurity()

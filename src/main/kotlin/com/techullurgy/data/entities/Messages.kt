@@ -18,7 +18,21 @@ interface Message: Entity<Message> {
     val isReceived: Boolean
 }
 
-object Messages: Table<Message>(MessagesTable) {
+//object Messages: Table<Message>(MessagesTable) {
+//    val id = long(MessagesColumns.MESSAGE_ID).primaryKey().bindTo { it.id }
+//    val payload = varchar(MessagesColumns.PAYLOAD).bindTo { it.payload }
+//    val type = enum<ChatMessageType>(MessagesColumns.TYPE).bindTo { it.type }
+//    val isReceived = boolean(MessagesColumns.IS_RECEIVED).bindTo { it.isReceived }
+//    val sender = long(MessagesColumns.SENDER_ID).references(UserDetails) { it.sender }
+//    val receiver = long(MessagesColumns.RECEIVER_ID).references(UserDetails) { it.receiver }
+//    val sentTimeFromSender = datetime(MessagesColumns.SENT_TIME_FROM_SENDER).bindTo { it.sentTimeFromSender }
+//    val receivedTimeToReceiver = datetime(MessagesColumns.RECEIVED_TIME_TO_RECEIVER).bindTo { it.receivedTimeToReceiver }
+//}
+
+open class Messages(alias: String?): Table<Message>(MessagesTable, alias) {
+    companion object : Messages(null)
+    override fun aliased(alias: String): Table<Message> = Messages(alias)
+
     val id = long(MessagesColumns.MESSAGE_ID).primaryKey().bindTo { it.id }
     val payload = varchar(MessagesColumns.PAYLOAD).bindTo { it.payload }
     val type = enum<ChatMessageType>(MessagesColumns.TYPE).bindTo { it.type }
@@ -32,8 +46,8 @@ object Messages: Table<Message>(MessagesTable) {
 val Database.chatMessages get() = this.sequenceOf(Messages)
 
 enum class ChatMessageType {
-    VIDEO,
-    TEXT,
-    VOICE,
-    IMAGE
+    video,
+    text,
+    voice,
+    image
 }

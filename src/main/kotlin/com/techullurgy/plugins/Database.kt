@@ -9,7 +9,7 @@ import org.ktorm.database.Database
 import org.ktorm.logging.ConsoleLogger
 import org.ktorm.logging.LogLevel
 
-fun Application.configureDatabases(): Repositories {
+fun Application.configureDatabases() {
     val database = Database.connect(
         url = environment.config.propertyOrNull("db.url")?.getString() ?: "",
         driver = environment.config.propertyOrNull("db.driver")?.getString(),
@@ -21,7 +21,7 @@ fun Application.configureDatabases(): Repositories {
     val userDetailsRepository = UserDetailsRepositoryImpl(database)
     val chatRepository = ChatRepositoryImpl(database)
 
-    return Repositories(
+    repositories = Repositories(
         userDetailsRepository = userDetailsRepository,
         chatRepository = chatRepository
     )
@@ -31,3 +31,6 @@ data class Repositories(
     val userDetailsRepository: UserDetailsRepository,
     val chatRepository: ChatRepository
 )
+
+var repositories: Repositories? = null
+    private set
