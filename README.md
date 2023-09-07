@@ -13,5 +13,5 @@ This project is mainly used for my Whatsapp Clone Android Application
 * Ktor Multipart/File Upload
 * Ktor File Download
 * Ktorm (ORM Framework for Relational Databases)
-* MySQL
+* MySQL (AWS RDS)
 * Obviously, Kotlin
