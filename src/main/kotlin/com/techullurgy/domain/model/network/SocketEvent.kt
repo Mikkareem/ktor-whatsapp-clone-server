@@ -1,4 +1,4 @@
-package com.techullurgy.data.model.network
+package com.techullurgy.domain.model.network
 
 import kotlinx.serialization.Serializable
 

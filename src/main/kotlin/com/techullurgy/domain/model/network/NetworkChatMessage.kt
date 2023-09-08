@@ -1,6 +1,6 @@
-package com.techullurgy.data.model.network
+package com.techullurgy.domain.model.network
 
-import com.techullurgy.data.entities.ChatMessageType
+import dev.techullurgy.data.model.database.ChatMessageType
 import kotlinx.serialization.Serializable
 
 @Serializable

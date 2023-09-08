@@ -1,8 +1,8 @@
 
-val ktor_version: String by project
-val kotlin_version: String by project
-val logback_version: String by project
-val ktorm_version: String by project
+val ktorVersion: String by project
+val kotlinVersion: String by project
+val logbackVersion: String by project
+val ktormVersion: String by project
 
 plugins {
     kotlin("jvm") version "1.9.10"
@@ -34,10 +34,9 @@ dependencies {
     implementation("io.ktor:ktor-server-sessions-jvm")
     implementation("io.ktor:ktor-server-auth-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
     testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 
-    implementation("org.ktorm:ktorm-core:${ktorm_version}")
-    implementation("mysql:mysql-connector-java:8.0.28")
+    implementation(project(":data"))
 }

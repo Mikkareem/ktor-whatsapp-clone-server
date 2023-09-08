@@ -1,7 +1,8 @@
 package com.techullurgy.plugins
 
-import com.techullurgy.data.model.database.User
-import com.techullurgy.data.repository.UserDetailsRepository
+import dev.techullurgy.data.model.database.User
+import dev.techullurgy.data.repositories
+import dev.techullurgy.data.repository.UserDetailsRepository
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 

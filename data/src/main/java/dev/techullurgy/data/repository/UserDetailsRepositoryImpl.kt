@@ -1,8 +1,10 @@
-package com.techullurgy.data.repository
+package dev.techullurgy.data.repository
 
-import com.techullurgy.data.entities.UserDetails
-import com.techullurgy.data.entities.userDetails
-import com.techullurgy.data.model.database.User
+import dev.techullurgy.data.entities.UserDetails
+import dev.techullurgy.data.entities.userDetails
+import dev.techullurgy.data.model.database.SavableUser
+import dev.techullurgy.data.model.database.User
+import dev.techullurgy.data.model.database.toUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.ktorm.database.Database
@@ -13,7 +15,7 @@ import org.ktorm.dsl.update
 import org.ktorm.entity.find
 import java.time.LocalDateTime
 
-class UserDetailsRepositoryImpl(
+internal class UserDetailsRepositoryImpl(
     private val database: Database
 ): UserDetailsRepository {
     override suspend fun getUserByUserId(userId: Long): User?
@@ -25,7 +27,7 @@ class UserDetailsRepositoryImpl(
     override suspend fun getUserByEmailId(emailId: String): User?
             = withContext(Dispatchers.IO) { database.userDetails.find { it.email eq emailId }?.toUser() }
 
-    override suspend fun insertUser(user: User): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun insertUser(user: SavableUser): Boolean = withContext(Dispatchers.IO) {
         val count = database.insert(UserDetails) {
             set(it.name, user.name)
             set(it.email, user.email)
