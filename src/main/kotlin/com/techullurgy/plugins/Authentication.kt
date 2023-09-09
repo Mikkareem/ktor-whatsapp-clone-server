@@ -1,14 +1,15 @@
 package com.techullurgy.plugins
 
-import dev.techullurgy.data.model.database.User
-import dev.techullurgy.data.repositories
-import dev.techullurgy.data.repository.UserDetailsRepository
+
+import dev.techullurgy.domain.models.User
+import dev.techullurgy.domain.services.UserService
+import dev.techullurgy.services
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 
 fun Application.configureAuthentication() {
-    val userDetailsRepository: UserDetailsRepository? = repositories?.userDetailsRepository
-    userDetailsRepository?.let {
+    val userService: UserService? = services?.userService
+    userService?.let {
         install(Authentication) {
             basicAuthentication("basic_auth", it)
         }
@@ -17,13 +18,13 @@ fun Application.configureAuthentication() {
 
 private fun AuthenticationConfig.basicAuthentication(
     authName: String? = null,
-    userDetailsRepository: UserDetailsRepository
+    userService: UserService
 ) {
     basic(authName) {
         validate { credentials ->
             val name = credentials.name
             val password = credentials.password
-            val user = userDetailsRepository.isUserExists(userName = name, password = password)
+            val user = userService.isUserExists(userName = name, password = password)
             user?.let { UserPrincipal(it) }
         }
     }

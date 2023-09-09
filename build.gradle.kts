@@ -25,6 +25,8 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":domain"))
+
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-websockets-jvm")
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
@@ -37,6 +39,4 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
-
-    implementation(project(":data"))
 }

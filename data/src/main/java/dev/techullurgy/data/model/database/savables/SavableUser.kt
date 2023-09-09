@@ -1,4 +1,4 @@
-package dev.techullurgy.data.model.database
+package dev.techullurgy.data.model.database.savables
 
 import java.time.LocalDateTime
 

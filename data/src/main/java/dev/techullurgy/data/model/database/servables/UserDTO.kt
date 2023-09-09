@@ -1,15 +1,15 @@
-package dev.techullurgy.data.model.database
+package dev.techullurgy.data.model.database.servables
 
 import dev.techullurgy.data.entities.UserDetail
 
-data class User(
+data class UserDTO(
     val id: Long = 0,
     val name: String,
     val email: String
 )
 
-internal fun UserDetail.toUser(): User =
-    User(
+internal fun UserDetail.toUserDTO(): UserDTO =
+    UserDTO(
         id = this.id,
         name = this.name,
         email = this.email

@@ -1,62 +1,66 @@
 package com.techullurgy.testing
 
-import dev.techullurgy.data.model.database.ChatMessageType
-import dev.techullurgy.data.model.database.SavableChatMessage
-import dev.techullurgy.data.model.database.SavableUser
-import dev.techullurgy.data.repository.ChatRepository
-import dev.techullurgy.data.repository.UserDetailsRepository
+import dev.techullurgy.domain.models.ChatMessage
+import dev.techullurgy.domain.models.ChatMessageStatus
+import dev.techullurgy.domain.models.ChatMessageType
+import dev.techullurgy.domain.services.MessageService
+import dev.techullurgy.domain.services.UserService
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
 fun test(
-    userDetailsRepository: UserDetailsRepository,
-    chatRepository: ChatRepository
+    userService: UserService,
+    messageService: MessageService
 ) {
     runBlocking {
-        userDetailsRepository.insertUser(SavableUser(name = "Irsath", email = "abc@gmail.com", password = "free"))
-        userDetailsRepository.insertUser(SavableUser(name = "Deepika", email = "gdf@gmail.com", password = "free"))
-        userDetailsRepository.insertUser(SavableUser(name = "Rajesh", email = "jjf@gmail.com", password = "free"))
-        userDetailsRepository.insertUser(SavableUser(name = "Guru", email = "eyu@gmail.com", password = "free"))
-        userDetailsRepository.insertUser(SavableUser(name = "Prasad", email = "asa@gmail.com", password = "free"))
-        userDetailsRepository.insertUser(SavableUser(name = "Riyas", email = "kdu@gmail.com", password = "free"))
-        userDetailsRepository.insertUser(SavableUser(name = "Faisal", email = "ier@gmail.com", password = "free"))
-        userDetailsRepository.insertUser(SavableUser(name = "Rahman", email = "uir@gmail.com", password = "free"))
+        userService.registerUser(username = "Irsath", email = "abc@gmail.com", password = "free")
+        userService.registerUser(username = "Deepika", email = "gdf@gmail.com", password = "free")
+        userService.registerUser(username = "Rajesh", email = "jjf@gmail.com", password = "free")
+        userService.registerUser(username = "Guru", email = "eyu@gmail.com", password = "free")
+        userService.registerUser(username = "Prasad", email = "asa@gmail.com", password = "free")
+        userService.registerUser(username = "Riyas", email = "kdu@gmail.com", password = "free")
+        userService.registerUser(username = "Faisal", email = "ier@gmail.com", password = "free")
+        userService.registerUser(username = "Rahman", email = "uir@gmail.com", password = "free")
 
-        chatRepository.postChat(
-            chatMessage = SavableChatMessage(
+        messageService.postChat(
+            chatMessage = ChatMessage(
                 senderId = 2,
                 receiverId = 4,
                 payload = "Hi da how are you?",
-                type = ChatMessageType.TEXT
+                type = ChatMessageType.TEXT,
+                status = ChatMessageStatus.SENT
             )
         )
 
-        chatRepository.postChat(
-            chatMessage = SavableChatMessage(
+        messageService.postChat(
+            chatMessage = ChatMessage(
                 senderId = 1,
                 receiverId = 4,
                 payload = "Hi da Free are you?",
                 type = ChatMessageType.TEXT,
-                sentTimeFromSender = LocalDateTime.now().minusMinutes(10L)
+                status = ChatMessageStatus.SENT,
+                sentTimeFromSender = LocalDateTime.now().minusMinutes(24L)
             )
         )
 
-        chatRepository.postChat(
-            chatMessage = SavableChatMessage(
+        messageService.postChat(
+            chatMessage = ChatMessage(
                 senderId = 1,
                 receiverId = 2,
                 payload = "http::/localhost:4444/get",
                 type = ChatMessageType.IMAGE,
+                status = ChatMessageStatus.SENT,
                 sentTimeFromSender = LocalDateTime.now().minusMinutes(20L)
             )
         )
 
-        chatRepository.postChat(
-            chatMessage = SavableChatMessage(
+        messageService.postChat(
+            chatMessage = ChatMessage(
                 senderId = 1,
                 receiverId = 2,
                 payload = "http::/localhost:4444/get",
                 type = ChatMessageType.TEXT,
+                status = ChatMessageStatus.SENT,
                 sentTimeFromSender = LocalDateTime.now().minusMinutes(14L)
             )
         )

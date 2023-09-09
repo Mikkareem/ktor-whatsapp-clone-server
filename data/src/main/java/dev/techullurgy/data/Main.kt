@@ -31,7 +31,7 @@ suspend fun initDB(url: String, username: String, password: String) = withContex
     val chatRepository = ChatRepositoryImpl(database)
     val blockingsRepository = BlockingsRepositoryImpl(database)
 
-    repositories = Repositories(
+    dev.techullurgy.data.repositories = dev.techullurgy.data.Repositories(
         userDetailsRepository = userDetailsRepository,
         chatRepository = chatRepository,
         blockingsRepository = blockingsRepository
@@ -44,5 +44,5 @@ data class Repositories(
     val blockingsRepository: BlockingsRepository
 )
 
-var repositories: Repositories? = null
+var repositories: dev.techullurgy.data.Repositories? = null
     private set

@@ -2,9 +2,11 @@ package dev.techullurgy.data.repository.impl
 
 import dev.techullurgy.data.entities.Messages
 import dev.techullurgy.data.entities.UserDetails
-import dev.techullurgy.data.model.database.ChatMessage
-import dev.techullurgy.data.model.database.ChatMessageType
-import dev.techullurgy.data.model.database.SavableChatMessage
+import dev.techullurgy.data.init.ext.hasRecords
+import dev.techullurgy.data.model.database.savables.SavableChatMessage
+import dev.techullurgy.data.model.database.servables.ChatMessageDTO
+import dev.techullurgy.data.model.database.servables.ChatMessageStatusDTO
+import dev.techullurgy.data.model.database.servables.ChatMessageTypeDTO
 import dev.techullurgy.data.repository.ChatRepository
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
@@ -13,37 +15,35 @@ import java.time.LocalDateTime
 internal class ChatRepositoryImpl(
     private val database: Database
 ): ChatRepository {
-    override suspend fun getUnreadTextMessagesForUser(receiverId: Long): List<ChatMessage> {
+    override suspend fun getUnreadMessagesForUser(receiverId: Long): List<ChatMessageDTO>? {
         val msg = Messages.aliased("msg") as Messages
         val senders = UserDetails.aliased("senders") as UserDetails
         val receiver = UserDetails.aliased("receiver") as UserDetails
 
-        val unreadNewMessagesForUser: List<ChatMessage> = database
+        val query: Query = database
             .from(msg)
             .leftJoin(senders, on = msg.sender eq senders.id)
             .leftJoin(receiver, on = msg.receiver eq receiver.id)
             .select(
-                msg.id, msg.type, msg.sender, msg.receiver, senders.name, receiver.name, msg.sentTimeFromSender, msg.payload, msg.receivedTimeToReceiver
+                msg.id, msg.type, msg.sender, msg.receiver, senders.name, receiver.name, msg.sentTimeFromSender, msg.payload, msg.status
             )
             .where {
-                (msg.receiver eq receiverId) and
-                (msg.isReceived eq false) and
-                (msg.type eq ChatMessageType.TEXT)
+                (msg.receiver eq receiverId) and (msg.status eq ChatMessageStatusDTO.SENT)
             }
-            .map { row ->
-                ChatMessage(
+
+        return if(query.hasRecords()) {
+            query.map { row ->
+                ChatMessageDTO(
                     id = row[msg.id]!!,
-                    type = ChatMessageType.valueOf(row[msg.type]!!.name),
+                    type = ChatMessageTypeDTO.valueOf(row[msg.type]!!.name),
+                    status = ChatMessageStatusDTO.valueOf(row[msg.status]!!.name),
                     senderId = row[msg.sender]!!,
                     receiverId = row[msg.receiver]!!,
-                    senderName = row[senders.name]!!,
-                    receiverName = row[receiver.name]!!,
                     sentTimeFromSender = row[msg.sentTimeFromSender]!!,
-                    payload = row[msg.payload]!!,
-                    receivedTimeToReceiver = row[msg.receivedTimeToReceiver]
+                    payload = row[msg.payload]!!
                 )
             }
-        return unreadNewMessagesForUser
+        } else null
     }
 
     override suspend fun postChat(chatMessage: SavableChatMessage) {
@@ -52,20 +52,32 @@ internal class ChatRepositoryImpl(
                 set(Messages.sender, chatMessage.senderId)
                 set(Messages.receiver, chatMessage.receiverId)
                 set(Messages.type, chatMessage.type)
+                set(Messages.status, chatMessage.status)
                 set(Messages.payload, chatMessage.payload)
-                set(Messages.isReceived, false)
                 set(Messages.sentTimeFromSender, chatMessage.sentTimeFromSender)
-                set(Messages.receivedTimeToReceiver, null)
+                set(Messages.receivedTimeToReceiver, chatMessage.receivedTimeToReceiver)
+                set(Messages.readTimeByReceiver, chatMessage.readTimeByReceiver)
             }
     }
 
     override suspend fun updateMessageReceived(messageId: Long, time: LocalDateTime) {
         database
             .update(Messages) {
-                set(Messages.isReceived, true)
                 set(Messages.receivedTimeToReceiver, time)
+                set(Messages.status, ChatMessageStatusDTO.RECEIVED)
                 where {
                     Messages.id eq messageId
+                }
+            }
+    }
+
+    override suspend fun updateMessageRead(messageId: Long, time: LocalDateTime) {
+        database
+            .update(Messages) {
+                set(Messages.status, ChatMessageStatusDTO.READ)
+                set(Messages.readTimeByReceiver, time)
+                where {
+                    (Messages.id eq messageId) and (Messages.status eq ChatMessageStatusDTO.RECEIVED)
                 }
             }
     }

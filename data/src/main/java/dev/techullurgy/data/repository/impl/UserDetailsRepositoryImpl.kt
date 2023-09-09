@@ -2,9 +2,9 @@ package dev.techullurgy.data.repository.impl
 
 import dev.techullurgy.data.entities.UserDetails
 import dev.techullurgy.data.entities.userDetails
-import dev.techullurgy.data.model.database.SavableUser
-import dev.techullurgy.data.model.database.User
-import dev.techullurgy.data.model.database.toUser
+import dev.techullurgy.data.model.database.savables.SavableUser
+import dev.techullurgy.data.model.database.servables.UserDTO
+import dev.techullurgy.data.model.database.servables.toUserDTO
 import dev.techullurgy.data.repository.UserDetailsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,14 +19,14 @@ import java.time.LocalDateTime
 internal class UserDetailsRepositoryImpl(
     private val database: Database
 ): UserDetailsRepository {
-    override suspend fun getUserByUserId(userId: Long): User?
-            = withContext(Dispatchers.IO) { database.userDetails.find { it.id eq userId }?.toUser() }
+    override suspend fun getUserByUserId(userId: Long): UserDTO?
+            = withContext(Dispatchers.IO) { database.userDetails.find { it.id eq userId }?.toUserDTO() }
 
-    override suspend fun getUserByUserName(userName: String): User?
-            = withContext(Dispatchers.IO) { database.userDetails.find { it.name eq userName }?.toUser() }
+    override suspend fun getUserByUserName(userName: String): UserDTO?
+            = withContext(Dispatchers.IO) { database.userDetails.find { it.name eq userName }?.toUserDTO() }
 
-    override suspend fun getUserByEmailId(emailId: String): User?
-            = withContext(Dispatchers.IO) { database.userDetails.find { it.email eq emailId }?.toUser() }
+    override suspend fun getUserByEmailId(emailId: String): UserDTO?
+            = withContext(Dispatchers.IO) { database.userDetails.find { it.email eq emailId }?.toUserDTO() }
 
     override suspend fun insertUser(user: SavableUser): Boolean = withContext(Dispatchers.IO) {
         val count = database.insert(UserDetails) {
@@ -39,7 +39,7 @@ internal class UserDetailsRepositoryImpl(
         count == 1
     }
 
-    override suspend fun updateLastLogin(user: User): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun updateLastLogin(user: UserDTO): Boolean = withContext(Dispatchers.IO) {
         val count = database.update(UserDetails) {
             set(it.lastLogin, LocalDateTime.now())
             where { it.id eq user.id }
@@ -47,6 +47,6 @@ internal class UserDetailsRepositoryImpl(
         count == 1
     }
 
-    override suspend fun isUserExists(userName: String, password: String): User?
-            = withContext(Dispatchers.IO) { database.userDetails.find { (it.name eq userName) and (it.password eq password) } }?.toUser()
+    override suspend fun isUserExists(userName: String, password: String): UserDTO?
+            = withContext(Dispatchers.IO) { database.userDetails.find { (it.name eq userName) and (it.password eq password) } }?.toUserDTO()
 }
