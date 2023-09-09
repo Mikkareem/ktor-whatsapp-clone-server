@@ -15,13 +15,23 @@ class BlockingsRepositoryImpl(
     private val database: Database
 ): BlockingsRepository {
     override suspend fun blockUser(blocking: SavableBlocking): Boolean = withContext(Dispatchers.IO) {
-        val count = database.insert(Blockings) {
+        val count = database.update(Blockings) {
+            set(it.isActive, true)
+            where {
+                (Blockings.blockedUser eq blocking.blockedUser.id)
+                (Blockings.blockedBy eq blocking.blockedBy.id)
+            }
+        }
+
+        if(count > 0) count > 0
+
+        val count2 = database.insert(Blockings) {
             set(it.blockedBy, blocking.blockedBy.id)
             set(it.blockedUser, blocking.blockedUser.id)
             set(it.blockTime, blocking.blockedTime)
             set(it.isActive, blocking.isActive)
         }
-        count > 0
+        count2 > 0
     }
 
     override suspend fun getBlockedUsersForUser(user: User): List<User>? = withContext(Dispatchers.IO) {
@@ -38,5 +48,27 @@ class BlockingsRepositoryImpl(
                 User(row[UserDetails.id]!!, row[UserDetails.name]!!, row[UserDetails.email]!!)
             }
         } else null
+    }
+
+    override suspend fun unBlockUser(blocking: SavableBlocking): Boolean = withContext(Dispatchers.IO) {
+        val count = database.update(Blockings) {
+            set(it.isActive, false)
+            where {
+                (Blockings.blockedUser eq blocking.blockedUser.id)
+                (Blockings.blockedBy eq blocking.blockedBy.id)
+            }
+        }
+        count > 0
+    }
+
+    override suspend fun isBlockedChannel(blocking: SavableBlocking): Boolean = withContext(Dispatchers.IO) {
+        val query = database
+            .from(Blockings)
+            .select()
+            .where {
+                ((Blockings.blockedUser eq blocking.blockedUser.id) and (Blockings.blockedBy eq blocking.blockedBy.id) and (Blockings.isActive eq true)) or
+                ((Blockings.blockedUser eq blocking.blockedBy.id) and (Blockings.blockedBy eq blocking.blockedUser.id) and (Blockings.isActive eq true))
+            }
+        query.hasRecords()
     }
 }

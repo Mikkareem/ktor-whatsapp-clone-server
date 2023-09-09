@@ -16,4 +16,18 @@ interface BlockingsRepository {
      * Returns null, if there is no blocked users for incoming user
      */
     suspend fun getBlockedUsersForUser(user: User): List<User>?
+
+    /**
+     * This function is used to Unblock the user.
+     */
+    suspend fun unBlockUser(blocking: SavableBlocking): Boolean
+
+    /**
+     * This function is used to find whether the Channel between two users are valid.
+     * It checks both the way, Like
+     *      1) Incoming ----> Outgoing
+     *      2) Outgoing ----> Incoming
+     * Both the cases, we need to Block the channel like (conversation...)
+     */
+    suspend fun isBlockedChannel(blocking: SavableBlocking): Boolean
 }

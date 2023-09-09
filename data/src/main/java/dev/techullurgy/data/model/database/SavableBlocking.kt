@@ -5,6 +5,6 @@ import java.time.LocalDateTime
 data class SavableBlocking(
     val blockedBy: User,
     val blockedUser: User,
-    val blockedTime: LocalDateTime,
+    val blockedTime: LocalDateTime = LocalDateTime.now(),
     val isActive: Boolean = true
 )
