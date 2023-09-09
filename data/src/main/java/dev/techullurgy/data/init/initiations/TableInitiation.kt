@@ -1,7 +1,7 @@
 package dev.techullurgy.data.init.initiations
 
-import dev.techullurgy.data.init.createTable
-import dev.techullurgy.data.init.isTableExists
+import dev.techullurgy.data.init.ext.createTable
+import dev.techullurgy.data.init.ext.isTableExists
 import dev.techullurgy.data.init.schema.TableStructure
 import org.ktorm.database.Database
 

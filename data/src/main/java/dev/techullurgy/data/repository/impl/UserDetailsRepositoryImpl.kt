@@ -1,10 +1,11 @@
-package dev.techullurgy.data.repository
+package dev.techullurgy.data.repository.impl
 
 import dev.techullurgy.data.entities.UserDetails
 import dev.techullurgy.data.entities.userDetails
 import dev.techullurgy.data.model.database.SavableUser
 import dev.techullurgy.data.model.database.User
 import dev.techullurgy.data.model.database.toUser
+import dev.techullurgy.data.repository.UserDetailsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.ktorm.database.Database

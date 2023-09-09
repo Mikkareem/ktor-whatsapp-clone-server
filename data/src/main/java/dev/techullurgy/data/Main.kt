@@ -3,10 +3,12 @@ package dev.techullurgy.data
 import dev.techullurgy.data.init.initiations.BlockingsTableInitiation
 import dev.techullurgy.data.init.initiations.MessagesTableInitiation
 import dev.techullurgy.data.init.initiations.UserDetailsTableInitiation
+import dev.techullurgy.data.repository.BlockingsRepository
 import dev.techullurgy.data.repository.ChatRepository
-import dev.techullurgy.data.repository.ChatRepositoryImpl
 import dev.techullurgy.data.repository.UserDetailsRepository
-import dev.techullurgy.data.repository.UserDetailsRepositoryImpl
+import dev.techullurgy.data.repository.impl.BlockingsRepositoryImpl
+import dev.techullurgy.data.repository.impl.ChatRepositoryImpl
+import dev.techullurgy.data.repository.impl.UserDetailsRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.ktorm.database.Database
@@ -27,16 +29,19 @@ suspend fun initDB(url: String, username: String, password: String) = withContex
 
     val userDetailsRepository = UserDetailsRepositoryImpl(database)
     val chatRepository = ChatRepositoryImpl(database)
+    val blockingsRepository = BlockingsRepositoryImpl(database)
 
     repositories = Repositories(
         userDetailsRepository = userDetailsRepository,
-        chatRepository = chatRepository
+        chatRepository = chatRepository,
+        blockingsRepository = blockingsRepository
     )
 }
 
 data class Repositories(
     val userDetailsRepository: UserDetailsRepository,
-    val chatRepository: ChatRepository
+    val chatRepository: ChatRepository,
+    val blockingsRepository: BlockingsRepository
 )
 
 var repositories: Repositories? = null

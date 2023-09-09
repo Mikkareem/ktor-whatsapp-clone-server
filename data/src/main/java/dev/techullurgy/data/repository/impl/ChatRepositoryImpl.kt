@@ -1,10 +1,11 @@
-package dev.techullurgy.data.repository
+package dev.techullurgy.data.repository.impl
 
 import dev.techullurgy.data.entities.Messages
 import dev.techullurgy.data.entities.UserDetails
 import dev.techullurgy.data.model.database.ChatMessage
 import dev.techullurgy.data.model.database.ChatMessageType
 import dev.techullurgy.data.model.database.SavableChatMessage
+import dev.techullurgy.data.repository.ChatRepository
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import java.time.LocalDateTime

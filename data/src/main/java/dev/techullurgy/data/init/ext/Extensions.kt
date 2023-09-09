@@ -1,9 +1,10 @@
-package dev.techullurgy.data.init
+package dev.techullurgy.data.init.ext
 
 import dev.techullurgy.data.init.initiations.TableInitiation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.ktorm.database.Database
+import org.ktorm.dsl.Query
 import java.sql.SQLException
 import kotlin.system.exitProcess
 
@@ -84,3 +85,5 @@ private fun StringBuilder.removeSuffixInline(suffix: String) {
     clear()
     append(temp)
 }
+
+internal fun Query.hasRecords(): Boolean = totalRecordsInAllPages > 0
